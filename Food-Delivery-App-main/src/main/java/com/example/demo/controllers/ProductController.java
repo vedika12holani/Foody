@@ -28,6 +28,27 @@ public class ProductController
 		return "redirect:/admin/services";
 	}
 
+	// View All Products
+//	@GetMapping("/products")
+//	public String viewProducts(Model model) {
+//		List<Product> products = productServices.getAllProducts();
+//		model.addAttribute("products", products);
+//		return "Products"; // products.html in templates folder
+//	}
+
+//	@PostMapping("/product/search")
+//	public String searchProduct(@ModelAttribute("productName") String productName, Model model) {
+//		Product product = productServices.getProductByName(productName);
+//		if (product != null) {
+//			model.addAttribute("product", product);
+//		} else {
+//			model.addAttribute("message", "Product not available");
+//		}
+//		return "buy-product"; // Thymeleaf template name
+//	}
+
+
+
 	//	UpdateProduct
 	@GetMapping("/updatingProduct/{productId}")
 	public String updateProduct(@ModelAttribute Product product,@PathVariable("productId") int id)

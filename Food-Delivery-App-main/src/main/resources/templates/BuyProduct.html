@@ -26,6 +26,14 @@
 		width: 270px;
 	}
 
+	.searchMessage {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: red;
+    }
+
+
 	.searchInput button {
 		padding: 15px;
 		width: 100px;
@@ -86,13 +94,18 @@
 	<a href="/login">Back</a>
 	<center>
 
-		<form action="" th:action="@{/product/search}" method="post" class="searchInput">
+		<form th:action="@{/product/search}" method="post" class="searchInput">
 			<h1>Product Search :</h1>
 			<input type="text" name="productName" required placeholder="Please enter the Product Name....">
 			<button type="submit">SEARCH</button><br />
-			<smal style="color: red;" th:text="${message}"> </smal>
+
+			<!-- Message section -->
+			<div th:if="${message != null}" class="searchMessage">
+				<small th:text="${message}"></small>
+			</div>
 		</form>
-		
+
+
 		<div th:if="${product!=null}" class="details">
 			<form action="" th:action="@{/product/order}" th:object="${product}" method="post">
 				ProductName :

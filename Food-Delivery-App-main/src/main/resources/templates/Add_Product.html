@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.com">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8" />
@@ -11,18 +11,30 @@
 <a href="/admin/services">Back to Services</a>
 	<div class="addProducts">
 		<h3 style="font-weight: bolder;color: seagreen;">ADD NEW PRODUCT :</h3>
-		<form action="" th:action="@{/addingProduct}" method="post">
+<!--		<form action="" th:action="@{/addingProduct}" method="post">-->
+<!--			Product_Name :-->
+<!--			<input type="text" name="pname" value="" placeholder="Enter Product Name....." /> <br />-->
+<!--			Product_Price :-->
+<!--			<input type="text" name="pprice" placeholder="Enter Product Price...." /><br />-->
+<!--			Product_Desc : <br />-->
+<!--			<textarea name="pdescription" id="" cols="15" rows="1"-->
+<!--				placeholder="Enter Product Description.."></textarea><br />-->
+
+<!--			<button type="submit">Add_Product</button>-->
+
+<!--		</form>-->
+		<form th:action="@{/addingProduct}" th:object="${product}" method="post">
 			Product_Name :
-			<input type="text" name="pname" value="" placeholder="Enter Product Name....." /> <br />
+			<input type="text" th:field="*{pname}" placeholder="Enter Product Name....."/> <br/>
 			Product_Price :
-			<input type="text" name="pprice" placeholder="Enter Product Price...." /><br />
-			Product_Desc : <br />
-			<textarea name="pdescription" id="" cols="15" rows="1"
-				placeholder="Enter Product Description.."></textarea><br />
+			<input type="text" th:field="*{pprice}" placeholder="Enter Product Price...."/><br/>
+			Product_Desc : <br/>
+			<textarea th:field="*{pdescription}" cols="15" rows="1"
+					  placeholder="Enter Product Description.."></textarea><br/>
 
 			<button type="submit">Add_Product</button>
-
 		</form>
+
 	</div>
 </body>
 

@@ -48,15 +48,22 @@ public class ProductServices
 		this.productRepository.deleteById(id);
 	}
 
-	public Product getProductByName(String name)
-	{
-		
-		Product product= this.productRepository.findByPname(name);
-		if(product!=null)
-		{
-			return product;
+//	public Product getProductByName(String name)
+//	{
+//
+//		Product product= this.productRepository.findByPname(name);
+//		if(product!=null)
+//		{
+//			return product;
+//		}
+//		return null;
+//
+//	}
+
+	public Product getProductByName(String name) {
+		if (name == null || name.trim().isEmpty()) {
+			return null;
 		}
-		return null;
-	
+		return this.productRepository.findByPnameIgnoreCase(name.trim());
 	}
 }

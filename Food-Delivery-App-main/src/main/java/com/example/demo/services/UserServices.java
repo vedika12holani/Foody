@@ -50,19 +50,33 @@ public class UserServices
 	this.userRepository.save(user);
 	}
 	
-	public boolean validateLoginCredentials(String email,String password)
-	{
-		List<User> users = (List<User>) this.userRepository.findAll();
-		for(User u:users)
-		{
-		if(u!=null && u.getUpassword().equals(password) && u.getUemail().equals(email))
-		{
+//	public boolean validateLoginCredentials(String email,String password)
+//	{
+//		List<User> users = (List<User>) this.userRepository.findAll();
+//		for(User u:users)
+//		{
+//		if(u!=null && u.getUpassword().equals(password) && u.getUemail().equals(email))
+//		{
+//			return true;
+//		}
+//		}
+//		return false;
+//	}
+public boolean validateLoginCredentials(String email, String password) {
+	List<User> users = (List<User>) this.userRepository.findAll();
+	for (User u : users) {
+		if (u != null
+				&& u.getUemail() != null
+				&& u.getUpassword() != null
+				&& u.getUemail().equals(email)
+				&& u.getUpassword().equals(password)) {
 			return true;
 		}
-		}
-		return false;
 	}
-	
+	return false;
+}
+
+
 
 
 }

@@ -72,24 +72,30 @@ public class AdminController {
 
 	}
 	@PostMapping("/product/search")
-	public String seachHandler(@RequestParam("productName") String name,Model model)
-	{
+	public String searchHandler(@RequestParam("productName") String name, Model model) {
 
-		Product product=this.productServices.getProductByName(name);
-		if(product==null)
-		{
-			model.addAttribute("message", "SORRY...!  Product Unavailable");
-			model.addAttribute("product", product);
-			List<Orders> orders = this.orderServices.getOrdersForUser(user);
-			model.addAttribute("orders", orders);
+		// 1. check if DB has any products at all
+		List<Product> allProducts = this.productServices.getAllProducts();
+		if (allProducts.isEmpty()) {
+			model.addAttribute("message", "No products available in the system.");
+			model.addAttribute("orders", this.orderServices.getOrdersForUser(user));
 			return "BuyProduct";
 		}
-		List<Orders> orders = this.orderServices.getOrdersForUser(user);
-		model.addAttribute("orders", orders);
-		model.addAttribute("product", product);
-		return "BuyProduct";
 
-	} 
+		// 2. try to find by name
+		Product product = this.productServices.getProductByName(name);
+		if (product == null) {
+			model.addAttribute("message", "SORRY...! Product Unavailable");
+			model.addAttribute("orders", this.orderServices.getOrdersForUser(user));
+			return "BuyProduct";
+		}
+
+		// 3. found → send product + orders
+		model.addAttribute("product", product);
+		model.addAttribute("orders", this.orderServices.getOrdersForUser(user));
+		return "BuyProduct";
+	}
+
 	@GetMapping("/admin/services")
 	public String returnBack(Model model)
 	{
@@ -136,11 +142,16 @@ public class AdminController {
 		this.adminServices.delete(id);
 		return "redirect:/admin/services";
 	}
-	@GetMapping("/addProduct")
-	public String addProduct()
-	{
-		return "Add_Product";
-	}
+//	@GetMapping("/addProduct")
+//	public String addProduct()
+//	{
+//		return "Add_Product";
+//	}
+@GetMapping("/addProduct")
+public String addProduct(Model model) {
+	model.addAttribute("product", new Product());  // empty product for the form
+	return "Add_Product";
+}
 	
 	@GetMapping("/updateProduct/{productId}")
 	public String updateProduct(@PathVariable("productId") int id,Model model)
