@@ -1,34 +1,33 @@
-# ======================
-# 1. Build stage
-# ======================
-FROM maven:3.9.5-eclipse-temurin-17 AS build
+cat > Dockerfile <<'EOF'
+# Dockerfile (place at repo root, next to pom.xml)
 
-# Set working directory
+# 1) Build stage
+FROM maven:3.9.5-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy pom.xml and download dependencies first (cache layer)
+# copy pom and (optionally) mvnw so maven wrapper works if present
 COPY pom.xml .
+COPY mvnw . || true
+COPY .mvn .mvn || true
 RUN mvn dependency:go-offline -B
 
-# Copy source code
+# copy source and build jar
 COPY src ./src
+RUN mvn -B clean package -DskipTests
 
-# Package the application (skip tests for faster builds)
-RUN mvn clean package -DskipTests
-
-# ======================
-# 2. Runtime stage
-# ======================
+# 2) Runtime stage
 FROM eclipse-temurin:17-jdk-jammy
-
-# Set working directory
 WORKDIR /app
 
-# Copy the built JAR from the build stage
-COPY --from=build /app/target/Foody-0.0.1-SNAPSHOT.jar app.jar
+# copy the produced jar (use wildcard to avoid name mismatches)
+COPY --from=build /app/target/*.jar app.jar
 
-# Expose port (Render sets PORT env var automatically)
+# Optional: limit memory (adjust if needed)
+ENV JAVA_TOOL_OPTIONS="-Xms256m -Xmx512m"
+
+# allow Render (or Docker) to map port via env
+ENV SERVER_PORT=8080
 EXPOSE 8080
 
-# Run the application
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_TOOL_OPTIONS -jar /app/app.jar"]
+EOF
