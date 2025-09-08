@@ -1,11 +1,10 @@
-cat > Dockerfile <<'EOF'
-# Dockerfile (place at repo root, next to pom.xml)
+# Dockerfile (place next to pom.xml)
 
 # 1) Build stage
 FROM maven:3.9.5-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# copy pom and (optionally) mvnw so maven wrapper works if present
+# copy pom and optional mvnw so wrapper works if present
 COPY pom.xml .
 COPY mvnw . || true
 COPY .mvn .mvn || true
@@ -22,12 +21,10 @@ WORKDIR /app
 # copy the produced jar (use wildcard to avoid name mismatches)
 COPY --from=build /app/target/*.jar app.jar
 
-# Optional: limit memory (adjust if needed)
+# Optional memory limits (adjust if needed)
 ENV JAVA_TOOL_OPTIONS="-Xms256m -Xmx512m"
 
-# allow Render (or Docker) to map port via env
-ENV SERVER_PORT=8080
+# Expose port (app should read ${PORT})
 EXPOSE 8080
 
 ENTRYPOINT ["sh", "-c", "java $JAVA_TOOL_OPTIONS -jar /app/app.jar"]
-EOF
